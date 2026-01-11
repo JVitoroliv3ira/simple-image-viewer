@@ -1,6 +1,5 @@
 use image::GenericImageView;
 use pixels::{Pixels, SurfaceTexture};
-use std::{env, path::PathBuf};
 use winit::{
     dpi::LogicalSize,
     event::{Event, WindowEvent},
@@ -9,18 +8,19 @@ use winit::{
 };
 
 fn main() {
-    let mut args = env::args().skip(1);
-
-    let Some(p) = args.next() else {
-        eprintln!("Uso: siv <caminho-da-imagem>");
-        std::process::exit(2);
+    let args = match siv::cli::parse() {
+        Ok(a) => a,
+        Err(msg) => {
+            eprintln!("{msg}");
+            std::process::exit(2);
+        }
     };
 
     let mut window: Option<Window> = None;
     let mut window_id: Option<WindowId> = None;
     let mut pixels: Option<Pixels> = None;
 
-    let path = PathBuf::from(p);
+    let path = args.path;
     let image = match image::open(&path) {
         Ok(img) => img,
         Err(err) => {
