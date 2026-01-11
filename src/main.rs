@@ -1,4 +1,3 @@
-use image::GenericImageView;
 use pixels::{Pixels, SurfaceTexture};
 use winit::{
     dpi::LogicalSize,
@@ -21,22 +20,17 @@ fn main() {
     let mut pixels: Option<Pixels> = None;
 
     let path = args.path;
-    let image = match image::open(&path) {
-        Ok(img) => img,
-        Err(err) => {
-            eprintln!("Erro ao abrir a imagem: {}", err);
-            return;
+    let image = match siv::infra::load_image(&path) {
+        Ok(i) => i,
+        Err(msg) => {
+            eprint!("{msg}");
+            std::process::exit(2);
         }
     };
 
-    let (width, height) = image.dimensions();
-    println!("Width: {}, Height: {}", width, height);
-
-    let rgba = image.to_rgba8().into_raw();
-    if rgba.len() as u32 != width * height * 4 {
-        eprintln!("Buffer RGBA inválido");
-        return;
-    }
+    let width = image.width;
+    let height = image.height;
+    let rgba = image.rgba;
 
     let event_loop = match EventLoop::new() {
         Ok(l) => l,
