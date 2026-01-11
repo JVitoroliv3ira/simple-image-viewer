@@ -3,4 +3,12 @@ name = "simple-image-viewer"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "siv"
+path = "src/main.rs"
+
 [dependencies]
+image="0.25"
+winit = { version = "0.29", features = ["rwh_05"] }
+pixels = "0.13"
+anyhow="1"
